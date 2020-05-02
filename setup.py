@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="code-secret",
-    version="0.0.1",
+    version="0.0.2",
     author="Dobromir Kovachev",
     author_email="dobromir.mail@gmail.com",
     description="Tool for securing sensitive code private/public repositories",
@@ -19,4 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    entry_points = {
+        'console_scripts': ['secret=code_secret.command_line:main'],
+    },
 )

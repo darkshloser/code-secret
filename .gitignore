@@ -1,4 +1,5 @@
 .venv
 dist/
 build/
-code_secret*
+code_secret_*
+code_secret.*
