@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="code-secret",
-    version="0.0.2",
+    version="0.0.3",
     author="Dobromir Kovachev",
     author_email="dobromir.mail@gmail.com",
     description="Tool for securing sensitive code private/public repositories",
