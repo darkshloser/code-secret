@@ -5,8 +5,9 @@ class Configuration:
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.config.read_dict(
-            {'default': {'Name': 'code-secret',
-                         'Version': '0.3'}
+            {'default': {'name': 'code-secret',
+                         'version': '0.3',
+                         'git_dir': '.git'}
             }
         )
 

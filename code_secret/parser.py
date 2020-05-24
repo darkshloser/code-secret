@@ -18,7 +18,7 @@ def setup_parser():
         "-v",
         "--version",
         action="version",
-        version="Version: {ver}".format(ver=config.get_default['Version']),
+        version="Version: {ver}".format(ver=config.get_default['version']),
         help="Show program's version and exit."
     )
 
