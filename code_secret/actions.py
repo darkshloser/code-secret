@@ -1,4 +1,5 @@
 import os
+import sys
 from config import Configuration
 
 
@@ -23,7 +24,8 @@ class Actions(object):
             root_location = None
             root_found = None
         if not self._is_git_repo(location):
-            raise ValueError('There is no git repository!')
+            print("There is no git repository!")
+            sys.exit(1)
 
         root_location = location
         root_found = False
@@ -38,36 +40,48 @@ class Actions(object):
             return root_location
         except:
             inner_termination()
-            raise ValueError('There is no git repository!')
+            print("There is no git repository!")
+            sys.exit(1)
 
     def _init(self, path):
         #Check if path was given
         if len(path) >= 2:
-            raise ValueError('More than one path given!')
+            print("More than one path given!")
+            sys.exit(1)
         elif not len(path):
             path = ['.']
         path = path[0]
 
         #Check if the given path is valid
         if not os.path.isdir(path):
-            raise ValueError('Given path %s is not a valid one!' % (path))
+            print('Given path %s is not a valid one!' % (path))
+            sys.exit(1)
 
         #Get the root dir of the repository
         root_dir = self.get_git_root(path)
 
         #Check if '.secret' already exists
         git_dir = os.path.join(root_dir, self.config.get_default['git_dir'])
-        if os.path.isdir(git_dir):
-            print("Git directory exists!!")
-        #Initialize code-secret into '.git' repository
-        print(root_dir)
+        secret_dir = os.path.join(git_dir, self.config.get_default['secret_dir'])
+        if not os.path.isdir(secret_dir):
+            try:
+                os.mkdir(secret_dir)
+            except OSError:
+                print("Creation of the directory %s failed!" % (secret_dir))
+                sys.exit(1)
 
-        #
-        # #Check if init points to the root dir of the repository
-        # if not os.path.isdir(os.path.join(path,'.git')):
-        #     raise ValueError('Given path is not the root dir of the repository!')
-
-
+        #Check the list for encryption
+        encryption_list_location = \
+            os.path.join(secret_dir, self.config.get_specific['encryption_list'])
+        if not os.path.isfile(encryption_list_location):
+            try:
+                _ = open(encryption_list_location, "x")
+                print('Initialization of code-secret was successfully executed!')
+            except:
+                pass
+        else:
+            print('Initialization was already performed!')
+        sys.exit(0)
 
     def _add(self, args):
         print("ADD")
