@@ -19,7 +19,7 @@ class Actions(object):
         else:
             return False
 
-    def get_git_root(self, location):
+    def get_git_root(self, location='.'):
         def inner_termination():
             root_location = None
             root_found = None
@@ -42,6 +42,13 @@ class Actions(object):
             inner_termination()
             print("There is no git repository!")
             sys.exit(1)
+
+    @property
+    def get_secret_dir(self):
+        root_dir = self.get_git_root()
+        git_dir = os.path.join(root_dir, self.config.get_default['git_dir'])
+        secret_dir = os.path.join(git_dir, self.config.get_default['secret_dir'])
+        return secret_dir
 
     def _init(self, path):
         #Check if path was given
@@ -84,7 +91,34 @@ class Actions(object):
         sys.exit(0)
 
     def _add(self, args):
-        print("ADD")
+        secret_dir = self.get_secret_dir
+        encryption_list_location = \
+            os.path.join(secret_dir, self.config.get_specific['encryption_list'])
+
+        if not os.path.isfile(encryption_list_location):
+            print("Code-secret initialization wasn't performed!")
+            sys.exit(1)
+
+        if not isinstance(args, list) or isinstance(args, list) \
+            and len(args) == 0:
+            print("No files to add for encryption!")
+            sys.exit(1)
+
+        for file in args:
+            if not os.path.isfile(file):
+                print("Given file name(s) doesn't exist!")
+                sys.exit(1)
+
+        file_to_add = []
+        with open(encryption_list_location, 'r') as encrytFiles:
+            for line in encrytFiles:
+                if not any(file_to_encript in line for file_to_encript in args):
+                    file_to_add.append(os.path.abspath(file_to_encript))
+
+        with open(encryption_list_location, 'a+') as fileObject:
+            for item in file_to_add:
+                fileObject.write("\n")
+                fileObject.write(item)
 
     def _remove(self, args):
         print("REMOVE")
