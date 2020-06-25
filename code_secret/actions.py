@@ -1,11 +1,15 @@
 import os
 import sys
 from config import Configuration
+from crypto import Crypto
 
 
 class Actions(object):
     def __init__(self):
         self.config = Configuration()
+        import pdb;
+        pdb.set_trace()
+        test = Crypto()
 
     def indirect(self,option_name, args):
         method_name='_'+str(option_name)
