@@ -6,8 +6,8 @@ from cryptography.hazmat.primitives import serialization
 
 class Crypto(object):
     def __init__(self):
-        self.key_path = password = input("Set full key path: ")
-        if self.key_path.length > 0:
+        self.key_path = raw_input("Set full key path: ")
+        if len(self.key_path) > 0:
             if os.path.dirname(self.key_path):
                 return
 
@@ -16,7 +16,7 @@ class Crypto(object):
 
     @property
     def is_key_created(self):
-        if self.key_path.length > 0 and os.path.isfile(self.key_path):
+        if len(self.key_path) > 0 and os.path.isfile(self.key_path):
             try:
                 with open(self.key_path, "rb") as key_file:
                     _ = serialization.load_pem_private_key(
