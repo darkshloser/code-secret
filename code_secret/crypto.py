@@ -8,7 +8,7 @@ class Crypto(object):
     def __init__(self):
         self.key_path = raw_input("Set full key path: ")
         if len(self.key_path) > 0:
-            if os.path.dirname(self.key_path):
+            if os.path.isdir(os.path.dirname(self.key_path)):
                 return
 
         raise Exception("You need to specify path to existing " + \
@@ -32,12 +32,23 @@ class Crypto(object):
 
     @property
     def create_key(self):
+        private_key = None
         if not self.is_key_created:
-            private_key = rsa.generate_private_key(
-                public_exponent=65537,
-                key_size=2048,
-                backend=default_backend()
-            )
+            try:
+                private_key = rsa.generate_private_key(
+                    public_exponent=65537,
+                    key_size=2048,
+                    backend=default_backend()
+                )
+                pem = private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.PKCS8,
+                    encryption_algorithm=serialization.NoEncryption()
+                )
+                with open(self.key_path, 'wb') as f:
+                    f.write(pem)
+            except:
+                pass
         else:
             private_key = self.get_key
         return private_key
@@ -61,3 +72,18 @@ class Crypto(object):
             except:
                 pass
         return None
+
+    def encrypt_file(self, file):
+        if self.is_key_created and self.get_public_key:
+            f = open(self.key_path, 'rb')
+            message = f.read()
+            public_key = self.get_public_key
+            encrypted = public_key.encrypt(
+                message,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+        
