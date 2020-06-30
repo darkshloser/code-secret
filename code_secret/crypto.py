@@ -7,9 +7,19 @@ from cryptography.hazmat.primitives import serialization
 class Crypto(object):
     def __init__(self):
         self.key_path = raw_input("Set full key path: ")
+        ## Check the given argument (path to the file where is the key or
+        ## where it will be created)
         if len(self.key_path) > 0:
-            if os.path.isdir(os.path.dirname(self.key_path)):
-                return
+            try:
+                if os.path.isdir(os.path.dirname(self.key_path)):
+                    abs_base_path = \
+                        os.path.abspath(os.path.dirname(self.key_path))
+                    file_name = os.path.basename(self.key_path)
+                    self.key_path = \
+                        os.path.join(abs_base_path, file_name)
+                    return
+            except:
+                pass
 
         raise Exception("You need to specify path to existing " + \
             "key or full path to the newly generated one!")
@@ -73,17 +83,41 @@ class Crypto(object):
                 pass
         return None
 
-    def encrypt_file(self, file):
+    def backup_option(self):
+        pass
+
+    def _set_backout_copy(self, file):
+        pass
+
+    def _store_encription_data(self, file_path, encrypted_data):
+        ''' Prepare backout copy for every file which is going to be
+            encrypted and store encrypted info into files which will be commited
+            to the repository.
+        '''
+        if os.path.isfile(file_path):
+            name = os.path.basename(file_path)
+            path = os.path.dirname(file_path)
+
+        raise Exception(
+            'Following full path, {file_path} to file is not correct!'\
+            .format(file_nam))
+
+    def encrypt_file(self, files):
         if self.is_key_created and self.get_public_key:
-            f = open(self.key_path, 'rb')
-            message = f.read()
-            public_key = self.get_public_key
-            encrypted = public_key.encrypt(
-                message,
-                padding.OAEP(
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                    algorithm=hashes.SHA256(),
-                    label=None
-                )
-            )
-        
+            if not isinstance(fies, list):
+                files = [].push(files)
+            for item in files:
+                if os.path.isfile(item):
+                    f = open(item, 'rb')
+                    message = f.read()
+                    public_key = self.get_public_key
+                    encrypted = public_key.encrypt(
+                        message,
+                        padding.OAEP(
+                            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                            algorithm=hashes.SHA256(),
+                            label=None
+                        )
+                    )
+                    self.backup_option()
+                    self._store_encription_data(item, encrypted)
