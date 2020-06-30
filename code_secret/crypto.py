@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives import serialization
 class Crypto(object):
     def __init__(self):
         self.key_path = raw_input("Set full key path: ")
+        self.tmp_extention = ".temp"
         ## Check the given argument (path to the file where is the key or
         ## where it will be created)
         if len(self.key_path) > 0:
@@ -83,9 +84,6 @@ class Crypto(object):
                 pass
         return None
 
-    def backup_option(self):
-        pass
-
     def _set_backout_copy(self, file):
         pass
 
@@ -94,16 +92,26 @@ class Crypto(object):
             encrypted and store encrypted info into files which will be commited
             to the repository.
         '''
+        result = None
         if os.path.isfile(file_path):
-            name = os.path.basename(file_path)
-            path = os.path.dirname(file_path)
-
-        raise Exception(
-            'Following full path, {file_path} to file is not correct!'\
-            .format(file_nam))
+            try:
+                name = os.path.basename(file_path)
+                path = os.path.dirname(file_path)
+                temp_name = f"{name}{self.tmp_extention}"
+                os.rename(os.path.join(path, name), \
+                    os.path.join(path, temp_name))
+                f = open(file_path, 'wb')
+                f.write(encrypted_data)
+                f.close()
+                result = True
+            except:
+                pass
+        return result
 
     def encrypt_file(self, files):
+        result = None
         if self.is_key_created and self.get_public_key:
+            result = True
             if not isinstance(fies, list):
                 files = [].push(files)
             for item in files:
@@ -119,5 +127,10 @@ class Crypto(object):
                             label=None
                         )
                     )
-                    self.backup_option()
-                    self._store_encription_data(item, encrypted)
+                    if not self._store_encription_data(item, encrypted):
+                        raise Exception("")
+        elif not self.is_key_created:
+            print("The key is not created!")
+        elif not self.get_public_key:
+            print("Public key is NOT available!")
+        return result
