@@ -84,9 +84,6 @@ class Crypto(object):
                 pass
         return None
 
-    def _set_backout_copy(self, file):
-        pass
-
     def _store_encription_data(self, file_path, encrypted_data):
         ''' Prepare backout copy for every file which is going to be
             encrypted and store encrypted info into files which will be commited
@@ -109,6 +106,8 @@ class Crypto(object):
         return result
 
     def encrypt_file(self, files):
+        ''' Encrypts all the files with absolute paths given in a list.
+        '''
         result = None
         if self.is_key_created and self.get_public_key:
             result = True
@@ -128,7 +127,8 @@ class Crypto(object):
                         )
                     )
                     if not self._store_encription_data(item, encrypted):
-                        raise Exception("")
+                        raise Exception(f"Error when storing encrypted data fot {item}")
+
         elif not self.is_key_created:
             print("The key is not created!")
         elif not self.get_public_key:
