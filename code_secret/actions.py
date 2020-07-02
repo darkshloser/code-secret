@@ -2,6 +2,7 @@ import os
 import sys
 from config import Configuration
 from crypto import Crypto
+from proxy import Proxy
 
 
 class Actions(object):
@@ -9,6 +10,7 @@ class Actions(object):
         self.config = Configuration()
         import pdb;
         pdb.set_trace()
+        tt = Proxy()
         test = Crypto()
 
     def indirect(self,option_name, args):

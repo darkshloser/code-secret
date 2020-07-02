@@ -94,7 +94,7 @@ class Crypto(object):
             try:
                 name = os.path.basename(file_path)
                 path = os.path.dirname(file_path)
-                temp_name = f"{name}{self.tmp_extention}"
+                temp_name = "{name}{ext}".format(name=name, ext=self.tmp_extention)
                 os.rename(os.path.join(path, name), \
                     os.path.join(path, temp_name))
                 f = open(file_path, 'wb')
@@ -127,7 +127,7 @@ class Crypto(object):
                         )
                     )
                     if not self._store_encription_data(item, encrypted):
-                        raise Exception(f"Error when storing encrypted data fot {item}")
+                        raise Exception("Error when storing encrypted data fot {item}".format(item))
 
         elif not self.is_key_created:
             print("The key is not created!")
