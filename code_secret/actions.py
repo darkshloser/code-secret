@@ -56,6 +56,8 @@ class Actions(object):
         secret_dir = os.path.join(git_dir, self.config.get_default['secret_dir'])
         return secret_dir
 
+    def _
+
     def _init(self, path):
         #Check if path was given
         if len(path) >= 2:

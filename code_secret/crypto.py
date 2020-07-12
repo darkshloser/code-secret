@@ -43,12 +43,17 @@ class Crypto(object):
 
     @property
     def create_key(self):
+        """
+        This method will create RSA key if it doesn't exist
+        on the pointed locationself.
+        return : Private key (ready for usage)
+        """
         private_key = None
         if not self.is_key_created:
             try:
                 private_key = rsa.generate_private_key(
                     public_exponent=65537,
-                    key_size=2048,
+                    key_size=4096,
                     backend=default_backend()
                 )
                 pem = private_key.private_bytes(
@@ -58,8 +63,9 @@ class Crypto(object):
                 )
                 with open(self.key_path, 'wb') as f:
                     f.write(pem)
-            except:
-                pass
+            except Exception as err:
+                print("Something went wrong during key generation: "+ str(err))
+                private_key = None
         else:
             private_key = self.get_key
         return private_key
