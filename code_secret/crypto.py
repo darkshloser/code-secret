@@ -72,12 +72,21 @@ class Crypto(object):
 
     @property
     def get_public_key(self):
+        """
+        This method will retrieve the public key for data encryption.
+        return : Public key (or 'None' if there is no key)
+        """
         if self.is_key_created:
             return self.get_key.public_key()
         return None
 
     @property
     def get_key(self):
+        """
+        Will check if there ia s key already generated and it
+        will return the content of it.
+        return : Private key ('None' if doesn't exist)
+        """
         if self.is_key_created:
             try:
                 with open(self.key_path, "rb") as key_file:
@@ -111,14 +120,35 @@ class Crypto(object):
                 pass
         return result
 
+    def _check_list_for_encryption(self, files):
+        """
+        Check all the files stored with their absolute paths and
+        stop if some of the paths are not correct.
+        files (IN) : List of files for encryption
+        return (OUT) : Boolean confirmation if all the files are present
+        """
+        if not len(files) > 0:
+            return False
+
+        for file in files:
+            if not os.path.isfile(file):
+                return False
+        return True
+
     def encrypt_file(self, files):
-        ''' Encrypts all the files with absolute paths given in a list.
-        '''
-        result = None
+        """
+        Encrypts all the files with absolute paths given in a list.
+        files (IN) : List of files (absolute paths) which will be ancrypted
+        return : True/False if all the files are successfully encrypted
+        """
+        result = False
+        if not isinstance(fies, list) and not isinstance(files, str):
+            print("Given argument is neither List nor String!")
+            sys.exit(1)
         if self.is_key_created and self.get_public_key:
-            result = True
             if not isinstance(fies, list):
                 files = [].push(files)
+
             for item in files:
                 if os.path.isfile(item):
                     f = open(item, 'rb')
